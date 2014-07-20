@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import twitter4j.FilterQuery;
+import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.StatusAdapter;
 import twitter4j.TwitterStream;
@@ -20,7 +21,8 @@ public class SearchMain {
 		TwitterModel twitterModel = null;
 		if (args.length != 2) {
 			try {
-				twitterModel = TwitterConfParser.readConf("conf/twitter_conf.json");
+				twitterModel = TwitterConfParser
+						.readConf("conf/twitter_conf.json");
 			} catch (IOException e) {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
@@ -35,8 +37,10 @@ public class SearchMain {
 		}
 
 		TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
-		twitterStream.setOAuthConsumer(twitterModel.getConsumerKey(), twitterModel.getConsumerSecret());
-		twitterStream.setOAuthAccessToken(new AccessToken(twitterModel.getAccessToken(), twitterModel.getAccessToken_secret()));
+		twitterStream.setOAuthConsumer(twitterModel.getConsumerKey(),
+				twitterModel.getConsumerSecret());
+		twitterStream.setOAuthAccessToken(new AccessToken(twitterModel
+				.getAccessToken(), twitterModel.getAccessToken_secret()));
 
 		twitterStream.addListener(new MyStatusAdapter());
 		ArrayList<String> track = new ArrayList<String>();
@@ -47,11 +51,21 @@ public class SearchMain {
 		twitterStream.filter(new FilterQuery(0, null, trackArray));
 	}
 
-
 }
 
 class MyStatusAdapter extends StatusAdapter {
-	public void onStatus (Status status) {
-		System.out.println(status.getUser().getScreenName() + " " + status.getText() );
+	public void onStatus(Status status) {
+		System.out.println("@" + status.getUser().getScreenName());
+		System.out.println(status.getText());
+		MediaEntity[] arrMedia = status.getMediaEntities();
+
+		if (arrMedia.length > 0 ) {
+			System.out.println("メディアURLが見つかりました");
+		}
+		for (MediaEntity media : arrMedia) {
+			// http://kikutaro777.hatenablog.com/entry/2014/01/26/110350
+			System.out.println(media.getMediaURL());
+		}
+
 	}
 }
