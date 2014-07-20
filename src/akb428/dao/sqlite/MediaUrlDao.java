@@ -6,9 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Calendar;
 
 import akb428.dao.AbstractMediaUrlDao;
+import akb428.util.Calender;
 
 public class MediaUrlDao extends AbstractMediaUrlDao{
 
@@ -97,8 +97,8 @@ public class MediaUrlDao extends AbstractMediaUrlDao{
 			stmt.setString(1, url);
 			stmt.setString(2, keyword);
 			stmt.setString(3, twitterUserName);
-			stmt.setString(4, Calendar.getInstance().toString());
-			stmt.setString(5, Calendar.getInstance().toString());
+			stmt.setString(4, Calender.nowString());
+			stmt.setString(5, Calender.nowString());
 			stmt.executeUpdate();
 
 			stmt.close();
