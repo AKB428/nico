@@ -1,0 +1,18 @@
+bin/*
+
+*.class
+*~
+*.bak
+*.off
+*.old
+.DS_Store
+
+
+# Eclipse
+.classpath
+.project
+.settings
+
+
+private/*
+/bin/
