@@ -1,7 +1,15 @@
 package akb428.tkws;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
+import twitter4j.FilterQuery;
+import twitter4j.Status;
+import twitter4j.StatusAdapter;
+import twitter4j.TwitterStream;
+import twitter4j.TwitterStreamFactory;
+import twitter4j.auth.AccessToken;
 import akb428.tkws.model.TwitterModel;
 
 public class SearchMain {
@@ -26,10 +34,24 @@ public class SearchMain {
 			}
 		}
 
+		TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
+		twitterStream.setOAuthConsumer(twitterModel.getConsumerKey(), twitterModel.getConsumerSecret());
+		twitterStream.setOAuthAccessToken(new AccessToken(twitterModel.getAccessToken(), twitterModel.getAccessToken_secret()));
 
-		System.out.println(twitterModel.getAccessToken());
+		twitterStream.addListener(new MyStatusAdapter());
+		ArrayList<String> track = new ArrayList<String>();
+		track.addAll(Arrays.asList(args[0].split(",")));
 
+		String[] trackArray = track.toArray(new String[track.size()]);
+
+		twitterStream.filter(new FilterQuery(0, null, trackArray));
 	}
 
 
+}
+
+class MyStatusAdapter extends StatusAdapter {
+	public void onStatus (Status status) {
+		System.out.println(status.getUser().getScreenName() + " " + status.getText() );
+	}
 }

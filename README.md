@@ -4,6 +4,6 @@ boot (default)
 
 	java -jar tkws.jar "hogehoge"
 
-boot (decide conf)
+boot (設定ファイルを指定する)
 
-	java -jar tkws.jar "lovelive" "private/twitter_conf.json"
+	java -jar tkws.jar "ラブライブ" "private/twitter_conf.json"
