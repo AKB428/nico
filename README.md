@@ -11,7 +11,7 @@ TwitterのStreaming APIを使用します。
 
 Twitterの開発者アカウントを取得し
 
-* consumer_key,
+* consumer_key
 * consumer_secret
 * access_token
 * access_token_secret

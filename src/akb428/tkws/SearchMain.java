@@ -11,14 +11,20 @@ import twitter4j.StatusAdapter;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 import twitter4j.auth.AccessToken;
+import akb428.dao.IMediaUrlDao;
+import akb428.dao.sqlite.MediaUrlDao;
 import akb428.tkws.model.TwitterModel;
 
 public class SearchMain {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ClassNotFoundException {
 		// TODO 自動生成されたメソッド・スタブ
 
 		TwitterModel twitterModel = null;
+
+		// TODO 設定ファイルでMariaDBなどに切り替える
+		Class.forName("org.sqlite.JDBC");
+
 		if (args.length != 2) {
 			try {
 				twitterModel = TwitterConfParser
@@ -54,6 +60,11 @@ public class SearchMain {
 }
 
 class MyStatusAdapter extends StatusAdapter {
+
+	// TODO 設定ファイルでMariaDBなどに切り替える
+	IMediaUrlDao dao = new MediaUrlDao();
+
+
 	public void onStatus(Status status) {
 		System.out.println("@" + status.getUser().getScreenName());
 		System.out.println(status.getText());
@@ -65,7 +76,11 @@ class MyStatusAdapter extends StatusAdapter {
 		for (MediaEntity media : arrMedia) {
 			// http://kikutaro777.hatenablog.com/entry/2014/01/26/110350
 			System.out.println(media.getMediaURL());
-		}
 
+			if(!dao.isExistUrl(media.getMediaURL())) {
+				// TODO keywordを保存したいがここでは取得できないため一時的にtextをそのまま保存
+				dao.registUrl(media.getMediaURL(), status.getText(), status.getUser().getScreenName());
+			}
+		}
 	}
 }

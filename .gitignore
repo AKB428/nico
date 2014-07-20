@@ -13,6 +13,7 @@ bin/*
 .project
 .settings
 
+twitterKeyWordSearch.sqlite
 
 private/*
 /bin/
