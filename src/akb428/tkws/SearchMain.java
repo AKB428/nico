@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import akb428.tkws.model.TwitterModel;
 
-public class ConsoleMain {
+public class SearchMain {
 
 	public static void main(String[] args) {
 		// TODO 自動生成されたメソッド・スタブ
