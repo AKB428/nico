@@ -2,16 +2,11 @@ package akb428.tkws.dao.sqlite;
 
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import akb428.tkws.dao.AbstractMediaUrlDao;
-import akb428.tkws.model.MediaUrlModel;
-import akb428.util.Calender;
 
 public class MediaUrlDao extends AbstractMediaUrlDao {
 
