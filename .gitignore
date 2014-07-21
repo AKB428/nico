@@ -13,8 +13,8 @@ bin/*
 .project
 .settings
 
-twitterKeyWordSearch.sqlite
 
 private/*
 /bin/
 media/*
+database/twitterKeyWordSearch.*

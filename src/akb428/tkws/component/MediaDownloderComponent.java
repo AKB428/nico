@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import akb428.tkws.dao.sqlite.MediaUrlDao;
+import akb428.tkws.dao.h2.MediaUrlDao;
 import akb428.tkws.model.MediaUrlModel;
 import akb428.util.FileUtil;
 import akb428.util.HttpUtil;

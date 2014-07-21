@@ -1,25 +1,21 @@
-package akb428.tkws.dao.sqlite;
+package akb428.tkws.dao.h2;
 
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import akb428.tkws.dao.AbstractMediaUrlDao;
-import akb428.tkws.model.MediaUrlModel;
-import akb428.util.Calender;
 
-public class MediaUrlDao extends AbstractMediaUrlDao {
+
+public class MediaUrlDao extends AbstractMediaUrlDao{
 
 	public MediaUrlDao() {
 		// create a database connection
 		try {
-			con = DriverManager.getConnection("jdbc:sqlite:"
-					+ "twitterKeyWordSearch.sqlite");
+			con = DriverManager.
+				    getConnection("jdbc:h2:./database/twitterKeyWordSearch.h2");
 
 			tableCheckAndCreate();
 		} catch (SQLException e) {
@@ -53,11 +49,11 @@ public class MediaUrlDao extends AbstractMediaUrlDao {
 			statement
 					.executeUpdate("create table "
 							+ TABLE_NAME
-							+ " (id INTEGER PRIMARY KEY AUTOINCREMENT, url, search_word, twitter_user_name, created_at, updated_at, note)");
+							+ " (ID INT PRIMARY KEY AUTO_INCREMENT, url VARCHAR(2048), search_word  VARCHAR(1024), twitter_user_name VARCHAR(128), created_at VARCHAR(128),  updated_at VARCHAR(128), note VARCHAR(255));");
 			statement
 					.executeUpdate("create table "
 							+ TABLE_HISTORY_NAME
-							+ " (id INTEGER PRIMARY KEY AUTOINCREMENT, original_id INTEGER, url, search_word, twitter_user_name, created_at, updated_at, note)");
+							+ " (ID INT PRIMARY KEY AUTO_INCREMENT, original_id INT, url VARCHAR(2048), search_word VARCHAR(1024), twitter_user_name VARCHAR(128), created_at VARCHAR(128) ,updated_at VARCHAR(128), note VARCHAR(255));");
 
 			statement.executeUpdate("create index url_index on " + TABLE_NAME
 					+ "(url);");
@@ -67,37 +63,6 @@ public class MediaUrlDao extends AbstractMediaUrlDao {
 
 		statement.close();
 
-	}
-
-	@Override
-	public boolean isExistUrl(String url) {
-
-		Statement stmt;
-		ResultSet rs;
-		ResultSet rsHistory;
-
-		try {
-			stmt = con.createStatement();
-			String query = "SELECT * FROM " + TABLE_NAME + " WHERE url = '"
-					+ url + "'";
-			rs = stmt.executeQuery(query);
-
-			String query4History = "SELECT * FROM " + TABLE_HISTORY_NAME
-					+ " WHERE url = '" + url + "'";
-			rsHistory = stmt.executeQuery(query4History);
-
-			while (rs.next() || rsHistory.next()) {
-				return true;
-			}
-
-			rs.close();
-			rsHistory.close();
-			stmt.close();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return false;
 	}
 
 

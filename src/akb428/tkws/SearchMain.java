@@ -12,19 +12,19 @@ import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 import twitter4j.auth.AccessToken;
 import akb428.tkws.dao.IMediaUrlDao;
-import akb428.tkws.dao.sqlite.MediaUrlDao;
+import akb428.tkws.dao.h2.MediaUrlDao;
 import akb428.tkws.model.TwitterModel;
 import akb428.tkws.thread.MediaDownloderThread;
 
 public class SearchMain {
 
 	public static void main(String[] args) throws ClassNotFoundException {
-		// TODO 自動生成されたメソッド・スタブ
 
 		TwitterModel twitterModel = null;
 
 		// TODO 設定ファイルでMariaDBなどに切り替える
-		Class.forName("org.sqlite.JDBC");
+		//Class.forName("org.sqlite.JDBC");
+		Class.forName("org.h2.Driver");
 
 		if (args.length != 2) {
 			try {
