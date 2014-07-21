@@ -1,8 +1,8 @@
-#TwitterKeyWordSearch
+#Nico - twitter keyword search and image downloader
 
 ##これはなに？
 
-Twitterをキーワード指定で検索するツールです
+Twitterをキーワードで検索しヒットしたツイートに画像があったら保存するバッチです。
 
 TwitterのStreaming APIを使用します。
 
@@ -23,8 +23,23 @@ Twitterの開発者アカウントを取得し
 
 デフォルト
 
-	java -jar tkws.jar "hogehoge"
+	java -jar nico.jar "ぬこ"
 
 Twitter設定ファイルを指定する
 
-	java -jar tkws.jar "ラブライブ" "private/twitter_conf.json"
+	java -jar nico.jar "ラブライブ" "private/twitter_conf.json"
+
+
+##コンパイル方法
+
+コードは全部Javaで書かれています。
+
+Eclipseでプロジェクト指定するかantでコンパイルしてください。(注:build.xmlはあまりメンテしていません)
+
+
+##開発環境
+
+Java7+
+
+
+

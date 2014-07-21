@@ -11,9 +11,10 @@ import twitter4j.StatusAdapter;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 import twitter4j.auth.AccessToken;
-import akb428.dao.IMediaUrlDao;
-import akb428.dao.sqlite.MediaUrlDao;
+import akb428.tkws.dao.IMediaUrlDao;
+import akb428.tkws.dao.sqlite.MediaUrlDao;
 import akb428.tkws.model.TwitterModel;
+import akb428.tkws.thread.MediaDownloderThread;
 
 public class SearchMain {
 
@@ -55,6 +56,10 @@ public class SearchMain {
 		String[] trackArray = track.toArray(new String[track.size()]);
 
 		twitterStream.filter(new FilterQuery(0, null, trackArray));
+
+
+		MediaDownloderThread mediaDownloderThread = new MediaDownloderThread();
+		mediaDownloderThread.start();
 	}
 
 }
