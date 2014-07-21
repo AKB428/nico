@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Create Runnable Jar for Project TwitterKeyWordSearch">
+<project default="create_run_jar" name="Create Runnable Jar for Project TwitterKeyWordSearch" basedir=".">
 	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
 	<!--ANT 1.7 is required                                        -->
 
@@ -10,7 +10,18 @@
 	<target name="directory">
 		<mkdir dir="${compile}"/>
 	</target>
-	<target name="create_run_jar">
+
+  <path id="lib.classpath">
+    <fileset dir="./lib">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+  <target name="compile" depends="directory">
+    <javac srcdir="${source}"
+           destdir="${compile}" classpath="./lib/jackson-all-1.9.11.jar;./lib/twitter4j-core-4.0.2.jar;./lib/twitter4j-async-4.0.2.jar;./lib/twitter4j-media-support-4.0.2.jar;./lib/twitter4j-stream-4.0.2.jar;./lib/sqlite-jdbc-3.7.2.jar;./lib/h2-1.4.180.jar"/>
+  </target>
+
+	<target name="create_run_jar" depends="compile">
 		<jar destfile="./nico.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
 				<attribute name="Main-Class" value="akb428.tkws.SearchMain"/>
