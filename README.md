@@ -34,17 +34,22 @@ Twitter設定ファイルを指定する
 
 	java -jar nico.jar "ラブライブ" "private/twitter_conf.json"
 
+Java7で起動
+
+	java -jar nico_jvm7.jar "艦これ"
+
 
 ##コンパイル方法
 
 コードは全部Javaで書かれています。
 
-Eclipseでプロジェクト指定するかantでコンパイルしてください。(注:build.xmlはあまりメンテしていません)
+Eclipseでプロジェクト指定するかantでコンパイルしてください。(注:build.xmlおよびJVM7用のjarはあまりメンテしていません)
 
 
 ##実行環境
 
 Java7+ (JVM7.0以上が動くOS)
 
+推奨はJava8
 
 
