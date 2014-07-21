@@ -1,4 +1,9 @@
-#Nico - twitter keyword search and image downloader
+#Nico
+
+## twitter keyword search and image downloader
+
+![niko](http://i.imgur.com/detsLKI.jpg)
+
 
 ##これはなに？
 
