@@ -3,7 +3,7 @@
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
-        <jar destfile="tkws.jar" filesetmanifest="mergewithoutmain">
+        <jar destfile="nico.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="akb428.tkws.SearchMain"/>
                 <attribute name="Class-Path" value="."/>
