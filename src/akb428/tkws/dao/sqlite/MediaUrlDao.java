@@ -57,7 +57,7 @@ public class MediaUrlDao extends AbstractMediaUrlDao {
 			statement
 					.executeUpdate("create table "
 							+ TABLE_HISTORY_NAME
-							+ " (id INTEGER PRIMARY KEY AUTOINCREMENT, original_id, url, search_word, twitter_user_name, created_at, updated_at, note)");
+							+ " (id INTEGER PRIMARY KEY AUTOINCREMENT, original_id INTEGER, url, search_word, twitter_user_name, created_at, updated_at, note)");
 
 			statement.executeUpdate("create index url_index on " + TABLE_NAME
 					+ "(url);");
@@ -130,7 +130,7 @@ public class MediaUrlDao extends AbstractMediaUrlDao {
 		try {
 
 			String query = "INSERT INTO " + TABLE_HISTORY_NAME;
-			query += " (original_id, url,search_word,twitter_user_name, created_at,updated_at) VALUES (?,?,?,?,?) ";
+			query += " (original_id, url,search_word,twitter_user_name, created_at,updated_at) VALUES (?,?,?,?,?,?) ";
 
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, mediaUrlModel.getId());
@@ -140,11 +140,12 @@ public class MediaUrlDao extends AbstractMediaUrlDao {
 			stmt.setString(5, Calender.nowString());
 			stmt.setString(6, Calender.nowString());
 			stmt.executeUpdate();
+
 			stmt.close();
 
 			// 削除
 			PreparedStatement stmt2 = con.prepareStatement("DELETE FROM "
-					+ TABLE_NAME + "WHERE url ='" + mediaUrlModel.getUrl()
+					+ TABLE_NAME + " WHERE url ='" + mediaUrlModel.getUrl()
 					+ "';");
 			stmt2.executeUpdate();
 			stmt2.close();
@@ -163,7 +164,7 @@ public class MediaUrlDao extends AbstractMediaUrlDao {
 
 		try {
 			stmt = con.createStatement();
-			String query = "SELECT * FROM" + TABLE_NAME;
+			String query = "SELECT * FROM " + TABLE_NAME + ";";
 			rs = stmt.executeQuery(query);
 
 			while (rs.next()) {
