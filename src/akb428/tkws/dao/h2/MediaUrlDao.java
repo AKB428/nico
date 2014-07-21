@@ -41,7 +41,9 @@ public class MediaUrlDao extends AbstractMediaUrlDao{
 		Statement statement = con.createStatement();
 		DatabaseMetaData dbm = con.getMetaData();
 		// check if "employee" table is there
-		ResultSet tables = dbm.getTables(null, null, TABLE_NAME, null);
+		//http://markmail.org/message/tdl26btburmhuhkc
+		String[] types = {"TABLE"};
+		ResultSet tables = dbm.getTables(null, null, TABLE_NAME, types);
 		if (tables.next()) {
 			// Table exists
 		} else {
