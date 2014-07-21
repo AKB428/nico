@@ -1,22 +1,25 @@
 package akb428.tkws.component;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import akb428.tkws.dao.sqlite.MediaUrlDao;
+import akb428.tkws.model.MediaUrlModel;
 import akb428.util.FileUtil;
+import akb428.util.HttpUtil;
 
 public class MediaDownloderComponent {
 
 
-	List<String> urlList = null;
+	List<MediaUrlModel> mediaUrlModelList = null;
 
 	public boolean isDownloadList() {
 		MediaUrlDao mediaUrlDao = new MediaUrlDao();
 
-		urlList = mediaUrlDao.getUrlList();
+		mediaUrlModelList = mediaUrlDao.getUrlList();
 
-		if (urlList.size() > 0 ) {
+		if (mediaUrlModelList.size() > 0 ) {
 			return true;
 		}
 
@@ -26,20 +29,26 @@ public class MediaDownloderComponent {
 	public void download() {
 
 		// ファイル名はURL末尾
-		String folderPath = FileUtil.getFolderPathNameYearAndMonthSubDirectoryDay();
-		File file = new File(folderPath);
+		String folderCalenderPath = FileUtil.getFolderPathNameYearAndMonthSubDirectoryDay();
+		String path = FileUtil.createPath("media", folderCalenderPath);
+		File file = new File(path);
 		if (!file.exists()) {
 			file.mkdirs();
 		}
-		String path = null;
+
 		MediaUrlDao mediaUrlDao = new MediaUrlDao();
 
 		//ファイル保存
-		for (String url: urlList){
+		for (MediaUrlModel mediaUrlModel: mediaUrlModelList){
 			//ダウンロード
-
+			try {
+				HttpUtil.download(mediaUrlModel.getUrl(), path);
+			} catch (IOException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}
 			//deleteFlag設定
-			mediaUrlDao.deleteAndCopyHistory(url);
+			mediaUrlDao.deleteAndCopyHistory(mediaUrlModel);
 		}
 	}
 
