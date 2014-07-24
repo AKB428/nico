@@ -28,11 +28,11 @@ Twitterの開発者アカウントを取得し
 
 デフォルト
 
-	java -jar nico.jar "ぬこ"
+	java -jar nico.jar "ぬこ,猫"
 
 Twitter設定ファイルを指定する
 
-	java -jar nico.jar "ラブライブ" "private/twitter_conf.json"
+	java -jar nico.jar "ラブライブ,スクフェス,lovelive" "private/twitter_conf.json"
 
 Java7で起動
 
