@@ -3,38 +3,37 @@
 	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
 	<!--ANT 1.7 is required                                        -->
 
-	<property name="source" value="./src"/>
-	<property name="compile" value="./bin"/>
+	<property name="source" value="./src" />
+	<property name="compile" value="./bin" />
 
 	<!-- ディレクトリClassesの作成 -->
 	<target name="directory">
-		<mkdir dir="${compile}"/>
+		<mkdir dir="${compile}" />
 	</target>
 
 	<path id="lib.classpath">
 		<fileset dir="./lib">
-			<include name="**/*.jar"/>
+			<include name="**/*.jar" />
 		</fileset>
 	</path>
 	<target name="compile" depends="directory">
-		<javac srcdir="${source}"
-           destdir="${compile}" classpath="./lib/jackson-all-1.9.11.jar;./lib/twitter4j-core-4.0.2.jar;./lib/twitter4j-async-4.0.2.jar;./lib/twitter4j-media-support-4.0.2.jar;./lib/twitter4j-stream-4.0.2.jar;./lib/sqlite-jdbc-3.7.2.jar;./lib/h2-1.4.180.jar"/>
+		<javac srcdir="${source}" source="1.8" target="1.8" destdir="${compile}" classpath="./lib/jackson-all-1.9.11.jar;./lib/twitter4j-core-4.0.2.jar;./lib/twitter4j-async-4.0.2.jar;./lib/twitter4j-media-support-4.0.2.jar;./lib/twitter4j-stream-4.0.2.jar;./lib/sqlite-jdbc-3.7.2.jar;./lib/h2-1.4.180.jar" />
 	</target>
 
 	<target name="create_run_jar" depends="compile">
 		<jar destfile="./nico.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Main-Class" value="akb428.tkws.SearchMain"/>
-				<attribute name="Class-Path" value="."/>
+				<attribute name="Main-Class" value="akb428.tkws.SearchMain" />
+				<attribute name="Class-Path" value="." />
 			</manifest>
-			<fileset dir="./bin/"/>
-			<zipfileset excludes="META-INF/*.SF" src="./lib/jackson-all-1.9.11.jar"/>
-			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-core-4.0.2.jar"/>
-			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-async-4.0.2.jar"/>
-			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-media-support-4.0.2.jar"/>
-			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-stream-4.0.2.jar"/>
-			<zipfileset excludes="META-INF/*.SF" src="./lib/sqlite-jdbc-3.7.2.jar"/>
-			<zipfileset excludes="META-INF/*.SF" src="./lib/h2-1.4.180.jar"/>
+			<fileset dir="./bin/" />
+			<zipfileset excludes="META-INF/*.SF" src="./lib/jackson-all-1.9.11.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-core-4.0.2.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-async-4.0.2.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-media-support-4.0.2.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-stream-4.0.2.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="./lib/sqlite-jdbc-3.7.2.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="./lib/h2-1.4.180.jar" />
 		</jar>
 	</target>
 </project>

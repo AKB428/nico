@@ -49,7 +49,10 @@ public class SearchMain {
 		twitterStream.setOAuthAccessToken(new AccessToken(twitterModel
 				.getAccessToken(), twitterModel.getAccessToken_secret()));
 
-		twitterStream.addListener(new MyStatusAdapter());
+		// TODO 設定ファイルでMariaDBなどに切り替える
+		IMediaUrlDao dao = new MediaUrlDao();
+		
+		twitterStream.addListener(new MyStatusAdapter(dao));
 		ArrayList<String> track = new ArrayList<String>();
 		track.addAll(Arrays.asList(args[0].split(",")));
 
@@ -65,11 +68,13 @@ public class SearchMain {
 }
 
 class MyStatusAdapter extends StatusAdapter {
-
-	// TODO 設定ファイルでMariaDBなどに切り替える
-	IMediaUrlDao dao = new MediaUrlDao();
-
-
+	
+	IMediaUrlDao dao = null;
+	
+	public MyStatusAdapter (IMediaUrlDao dao) {
+		this.dao = dao;
+	}
+	
 	public void onStatus(Status status) {
 		System.out.println("@" + status.getUser().getScreenName());
 		System.out.println(status.getText());
