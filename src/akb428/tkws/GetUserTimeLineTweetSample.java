@@ -8,6 +8,7 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
+import twitter4j.URLEntity;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.json.DataObjectFactory;
@@ -61,6 +62,11 @@ public class GetUserTimeLineTweetSample {
 			MediaEntity[] arrMediaExt = status.getExtendedMediaEntities();
 			for (MediaEntity media : arrMediaExt) {
 				System.out.println("ExtendedMediaEntities= "+ media.getMediaURL());
+			}
+			
+			URLEntity[] entity = status.getURLEntities();
+			for (URLEntity urlEntity : entity) {
+				System.out.println("URLEntity= " + urlEntity.getExpandedURL());
 			}
 		}
 	}
