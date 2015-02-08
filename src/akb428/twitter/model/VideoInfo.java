@@ -17,13 +17,27 @@ public class VideoInfo {
 	private List<Variant> variants = null;
 	private List<Long> aspectRatio = null;
 
+	/**
+	 * ツイートの生JSON文字列からVideoInfo情報をListにして返却します
+	 * VideoInfoが見つからない場合はnullを返却します
+	 * @param rawJsonString JSON文字列
+	 * @return VideoInfoのリスト。ビデオ情報がない場合null
+	 * @throws JsonProcessingException
+	 * @throws IOException
+	 */
 	public static List<VideoInfo> fromRawJson(String rawJsonString) throws JsonProcessingException, IOException {
 		List <VideoInfo> videoInfoList = new ArrayList<>();
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode rootNode = mapper.readTree(rawJsonString);
 
-		JsonNode mediaNodo  = rootNode.get("extended_entities").get("media");
-		
+		JsonNode extentdedEntitiesNode = rootNode.get("extended_entities");
+		if (extentdedEntitiesNode == null) {
+			return null;
+		}
+		JsonNode mediaNodo  = extentdedEntitiesNode.get("media");
+		if( mediaNodo == null) {
+			return null;
+		}
 		// "type": "video",だったら・・
 		VideoInfo videoInfo = new VideoInfo();
 		JsonNode videoNode = mediaNodo.get(0).get("video_info");

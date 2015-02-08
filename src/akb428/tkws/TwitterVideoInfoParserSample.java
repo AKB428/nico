@@ -20,12 +20,13 @@ public class TwitterVideoInfoParserSample {
 		List<VideoInfo> videoInfoList = VideoInfo.fromRawJson(rawJsonString);
 
 		for (VideoInfo videoInfo : videoInfoList) {
-			System.out.println(videoInfo.getDurationMillis());
-			System.out.println(videoInfo.getAspectRatio());
+			System.out.println("duration_millis : " + videoInfo.getDurationMillis());
+			System.out.println("aspect_ratio : " + videoInfo.getAspectRatio());
 			for (Variant variant : videoInfo.getVariants()) {
-				System.out.println(variant.getBitrate());
-				System.out.println(variant.getContentType());
-				System.out.println(variant.getUrl());
+				System.out.println("variant");
+				System.out.println("|-- bitrate : " + variant.getBitrate());
+				System.out.println("|-- content_type : " + variant.getContentType());
+				System.out.println("|-- url : " + variant.getUrl());
 			}
 		}
 
