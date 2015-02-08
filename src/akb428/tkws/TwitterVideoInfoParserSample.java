@@ -1,6 +1,7 @@
 package akb428.tkws;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.codehaus.jackson.JsonProcessingException;
 
@@ -16,13 +17,16 @@ public class TwitterVideoInfoParserSample {
 
 		String rawJsonString = args[0];
 
-		VideoInfo videoInfo = VideoInfo.fromRawJson(rawJsonString);
-		System.out.println(videoInfo.getDurationMillis());
-		System.out.println(videoInfo.getAspectRatio());
-		for (Variant variant : videoInfo.getVariants()) {
-			System.out.println(variant.getBitrate());
-			System.out.println(variant.getContentType());
-			System.out.println(variant.getUrl());
+		List<VideoInfo> videoInfoList = VideoInfo.fromRawJson(rawJsonString);
+
+		for (VideoInfo videoInfo : videoInfoList) {
+			System.out.println(videoInfo.getDurationMillis());
+			System.out.println(videoInfo.getAspectRatio());
+			for (Variant variant : videoInfo.getVariants()) {
+				System.out.println(variant.getBitrate());
+				System.out.println(variant.getContentType());
+				System.out.println(variant.getUrl());
+			}
 		}
 
 	}
