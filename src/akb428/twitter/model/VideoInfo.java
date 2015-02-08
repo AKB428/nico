@@ -17,23 +17,15 @@ public class VideoInfo {
 	private List<Variant> variants = null;
 	private List<Long> aspectRatio = null;
 
-	public static VideoInfo fromRawJson(String rawJsonString) throws JsonProcessingException, IOException {
-		VideoInfo videoInfo = new VideoInfo();
+	public static List<VideoInfo> fromRawJson(String rawJsonString) throws JsonProcessingException, IOException {
+		List <VideoInfo> videoInfoList = new ArrayList<>();
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode rootNode = mapper.readTree(rawJsonString);
 
 		JsonNode mediaNodo  = rootNode.get("extended_entities").get("media");
-		//videoNode.size();
 		
-		// 方法2:オブジェクトのフィールド名からフィールドを取得
-	    Iterator<String> fieldNames = mediaNodo.get(0).getFieldNames();
-	    while (fieldNames.hasNext()) {
-	        String name = fieldNames.next();
-	        String value = rootNode.path(name).toString();
-
-	        System.out.println(name + ":" + value);
-	    }
-		
+		// "type": "video",だったら・・
+		VideoInfo videoInfo = new VideoInfo();
 		JsonNode videoNode = mediaNodo.get(0).get("video_info");
 		videoInfo.setDurationMillis(videoNode.get("duration_millis").getLongValue());
 		JsonNode aspectRatioNode = videoNode.get("aspect_ratio");
@@ -64,13 +56,8 @@ public class VideoInfo {
 		    }
 			videoInfo.setVariants(variantList);
 		}
-		
-		return videoInfo;
-	}
-
-	public List<String> getVideoUrls() {
-		List<String> videoUrls = new ArrayList<String>();
-		return videoUrls;
+		videoInfoList.add(videoInfo);
+		return videoInfoList;
 	}
 	
 	public long getDurationMillis() {
