@@ -9,6 +9,8 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import twitter4j.conf.ConfigurationBuilder;
+import twitter4j.json.DataObjectFactory;
 import akb428.twitter.model.videoinfo.Variant;
 
 public class VideoInfo {
@@ -18,15 +20,23 @@ public class VideoInfo {
 	private List<Long> aspectRatio = null;
 
 	/**
-	 * ツイートの生JSON文字列からVideoInfo情報をListにして返却します
-	 * VideoInfoが見つからない場合はnullを返却します
+	 * ツイートの生JSON文字列からVideoInfo情報をListにして返却します VideoInfoが見つからない場合はnullを返却します
+	 * ツイートの生JSONはTwitter4Jであれば
+	 * ----------------------------------------------------------------
+	 * ConfigurationBuilder cb = new ConfigurationBuilder();
+	 * cb.setJSONStoreEnabled(true);
+	 * String rawJsonString = DataObjectFactory.getRawJSON(Status status);
+	 * ----------------------------------------------------------------
+	 * で取得できます。
+	 * 
 	 * @param rawJsonString JSON文字列
-	 * @return VideoInfoのリスト。ビデオ情報がない場合null
+	 * @return VideoInfoのリスト。ビデオ情報がない場合はnull
 	 * @throws JsonProcessingException
 	 * @throws IOException
 	 */
-	public static List<VideoInfo> fromRawJson(String rawJsonString) throws JsonProcessingException, IOException {
-		List <VideoInfo> videoInfoList = new ArrayList<>();
+	public static List<VideoInfo> fromRawJson(String rawJsonString)
+			throws JsonProcessingException, IOException {
+		List<VideoInfo> videoInfoList = new ArrayList<>();
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode rootNode = mapper.readTree(rawJsonString);
 
@@ -34,46 +44,75 @@ public class VideoInfo {
 		if (extentdedEntitiesNode == null) {
 			return null;
 		}
-		JsonNode mediaNodo  = extentdedEntitiesNode.get("media");
-		if( mediaNodo == null) {
+		JsonNode mediaNodo = extentdedEntitiesNode.get("media");
+		if (mediaNodo == null) {
 			return null;
 		}
-		// "type": "video",だったら・・
+
+		Iterator<JsonNode> mediaNodeList = mediaNodo.getElements();
+		// mediaノードにはビデオ以外もあるので、動画情報のみ取得するようにする
+		// video_infoがあるかどうか
+		// media.type="video" かどうか
+		// のいずれかで判定する
+		// media: [ {type: video, video_info:{}}, {type: video, video_info:{}}, {},  ] 
+		while (mediaNodeList.hasNext()) {
+			JsonNode videoNode = mediaNodeList.next().get("video_info");
+			if (videoNode != null) {
+				VideoInfo videoInfo = fromVideoJsonNode(videoNode);
+				videoInfoList.add(videoInfo);
+			}
+		}
+
+		return videoInfoList;
+	}
+
+	/**
+	 * videoInfo（JsonNodeクラス）をVideoInfoクラスに変換します
+	 * VideoInfoクラスの各フィールドに対応するJSONプロパティが存在しないときはフィールドには何も設定しません。（nullのまま）
+	 * @param videoNode
+	 * @return
+	 */
+	public static VideoInfo fromVideoJsonNode(JsonNode videoNode) {
 		VideoInfo videoInfo = new VideoInfo();
-		JsonNode videoNode = mediaNodo.get(0).get("video_info");
-		videoInfo.setDurationMillis(videoNode.get("duration_millis").getLongValue());
-		JsonNode aspectRatioNode = videoNode.get("aspect_ratio");
+		JsonNode durationMillisNode = videoNode.get("duration_millis");
 		
-		if (aspectRatioNode != null) {
-			List<Long> aspectRatioList = new ArrayList<>();
-			Iterator<JsonNode> aspectRatioChildNodes = aspectRatioNode.getElements();
-		    while (aspectRatioChildNodes.hasNext()) {
-		    	aspectRatioList.add(aspectRatioChildNodes.next().getLongValue());
-		    }
-			videoInfo.setAspectRatio(aspectRatioList);
+		if (durationMillisNode != null) {
+			videoInfo.setDurationMillis(durationMillisNode.getLongValue());
 		}
 		
+		JsonNode aspectRatioNode = videoNode.get("aspect_ratio");
+		if (aspectRatioNode != null) {
+			List<Long> aspectRatioList = new ArrayList<>();
+			Iterator<JsonNode> aspectRatioChildNodes = aspectRatioNode
+					.getElements();
+			while (aspectRatioChildNodes.hasNext()) {
+				aspectRatioList
+						.add(aspectRatioChildNodes.next().getLongValue());
+			}
+			videoInfo.setAspectRatio(aspectRatioList);
+		}
+
 		JsonNode variantsNode = videoNode.get("variants");
-		
+
 		if (variantsNode != null) {
 			List<Variant> variantList = new ArrayList<>();
 			Iterator<JsonNode> variantChildNodes = variantsNode.getElements();
-		    while (variantChildNodes.hasNext()) {
-		    	Variant variant = new Variant();
-		    	JsonNode child = variantChildNodes.next();
-		    	if (child.get("bitrate") != null){ 
-		    	variant.setBitrate(child.get("bitrate").getLongValue());
-		    	}
-		    	variant.setContentType(child.get("content_type").getTextValue());
-		    	variant.setUrl(child.get("url").getTextValue());
-		    	variantList.add(variant);
-		    }
+			while (variantChildNodes.hasNext()) {
+				Variant variant = new Variant();
+				JsonNode child = variantChildNodes.next();
+				if (child.get("bitrate") != null) {
+					variant.setBitrate(child.get("bitrate").getLongValue());
+				}
+				variant.setContentType(child.get("content_type").getTextValue());
+				variant.setUrl(child.get("url").getTextValue());
+				variantList.add(variant);
+			}
 			videoInfo.setVariants(variantList);
 		}
-		videoInfoList.add(videoInfo);
-		return videoInfoList;
+
+		return videoInfo;
 	}
-	
+
 	public long getDurationMillis() {
 		return durationMillis;
 	}
