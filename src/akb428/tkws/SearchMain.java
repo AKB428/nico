@@ -78,17 +78,20 @@ class MyStatusAdapter extends StatusAdapter {
 	public void onStatus(Status status) {
 		System.out.println("@" + status.getUser().getScreenName());
 		System.out.println(status.getText());
-		MediaEntity[] arrMedia = status.getMediaEntities();
-
-		if (arrMedia.length > 0 ) {
+		// MediaEntity[] arrMedia = status.getMediaEntities(); これだと写真１枚しか取得できない
+		MediaEntity[] arrMediaExt = status.getExtendedMediaEntities();
+		
+		if (arrMediaExt.length > 0 ) {
 			System.out.println("メディアURLが見つかりました");
 		}
-		for (MediaEntity media : arrMedia) {
+		
+		for (MediaEntity media : arrMediaExt) {
 			// http://kikutaro777.hatenablog.com/entry/2014/01/26/110350
 			System.out.println(media.getMediaURL());
 
 			if(!dao.isExistUrl(media.getMediaURL())) {
 				// TODO keywordを保存したいがここでは取得できないため一時的にtextをそのまま保存
+				// idはインクリメントで自動払い出し
 				dao.registUrl(media.getMediaURL(), status.getText(), status.getUser().getScreenName());
 			}
 		}
