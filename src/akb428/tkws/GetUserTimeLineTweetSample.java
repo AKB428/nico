@@ -3,6 +3,8 @@ package akb428.tkws;
 import java.io.IOException;
 import java.util.List;
 
+import org.codehaus.jackson.JsonProcessingException;
+
 import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -13,10 +15,11 @@ import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.json.DataObjectFactory;
 import akb428.tkws.model.TwitterModel;
+import akb428.twitter.model.VideoInfo;
 
 public class GetUserTimeLineTweetSample {
 
-	public static void main(String[] args) throws TwitterException {
+	public static void main(String[] args) throws TwitterException, JsonProcessingException, IOException {
 		// TODO 自動生成されたメソッド・スタブ
 
 		TwitterModel twitterModel = null;
@@ -67,6 +70,13 @@ public class GetUserTimeLineTweetSample {
 			URLEntity[] entity = status.getURLEntities();
 			for (URLEntity urlEntity : entity) {
 				System.out.println("URLEntity= " + urlEntity.getExpandedURL());
+			}
+			
+			List<VideoInfo> videoInfoList = VideoInfo.fromRawJson(rawJSON);
+			if (videoInfoList != null) {
+				for (VideoInfo videoInfo : videoInfoList) {
+					videoInfo.printFormatVideoInfo();
+				}
 			}
 		}
 	}

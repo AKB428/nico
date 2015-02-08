@@ -15,6 +15,7 @@ public class TwitterVideoInfoParserSample {
 		String rawJsonString = args[0];
 
 		List<VideoInfo> videoInfoList = VideoInfo.fromRawJson(rawJsonString);
+
 		for (VideoInfo videoInfo : videoInfoList) {
 			videoInfo.printFormatVideoInfo();
 		}
