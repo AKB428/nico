@@ -6,6 +6,7 @@ import java.util.List;
 
 import akb428.tkws.dao.h2.MediaUrlDao;
 import akb428.tkws.model.MediaUrlModel;
+import akb428.util.Calender;
 import akb428.util.FileUtil;
 import akb428.util.HttpUtil;
 
@@ -42,7 +43,9 @@ public class MediaDownloderComponent {
 		for (MediaUrlModel mediaUrlModel: mediaUrlModelList){
 			//ダウンロード
 			try {
-				HttpUtil.download(mediaUrlModel.getUrl(), path);
+				String filePath = HttpUtil.download(mediaUrlModel.getUrl(), path);
+				String destPath = "web_rabbitmq_nico/" + Calender.ymd();
+				
 			} catch (IOException e) {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
