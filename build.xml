@@ -27,13 +27,16 @@
 				<attribute name="Class-Path" value="." />
 			</manifest>
 			<fileset dir="./bin/" />
+			<zipfileset excludes="META-INF/*.SF" src="./lib/commons-cli-1.1.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="./lib/commons-io-1.2.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="./lib/h2-1.4.180.jar" />
 			<zipfileset excludes="META-INF/*.SF" src="./lib/jackson-all-1.9.11.jar" />
+			<zipfileset excludes="META-INF/*.SF" src="./lib/rabbitmq-client.jar"/>
 			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-core-4.0.2.jar" />
 			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-async-4.0.2.jar" />
 			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-media-support-4.0.2.jar" />
 			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-stream-4.0.2.jar" />
 			<zipfileset excludes="META-INF/*.SF" src="./lib/sqlite-jdbc-3.7.2.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="./lib/h2-1.4.180.jar" />
 		</jar>
 	</target>
 </project>
