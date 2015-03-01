@@ -9,6 +9,7 @@ import akb428.tkws.model.MediaUrlModel;
 import akb428.util.Calender;
 import akb428.util.FileUtil;
 import akb428.util.HttpUtil;
+import akb428.util.RabbitMQ;
 
 public class MediaDownloderComponent {
 
@@ -45,7 +46,7 @@ public class MediaDownloderComponent {
 			try {
 				String filePath = HttpUtil.download(mediaUrlModel.getUrl(), path);
 				String destPath = "web_rabbitmq_nico/" + Calender.ymd();
-				
+				RabbitMQ.send(destPath, filePath);
 			} catch (IOException e) {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
