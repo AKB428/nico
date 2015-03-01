@@ -25,8 +25,7 @@ public class GetUserTimeLineTweetSample {
 		TwitterModel twitterModel = null;
 		if (args.length != 2) {
 			try {
-				twitterModel = TwitterConfParser
-						.readConf("conf/twitter_conf.json");
+				twitterModel = TwitterConfParser.readConf("conf/twitter_conf.json");
 			} catch (IOException e) {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
@@ -39,24 +38,21 @@ public class GetUserTimeLineTweetSample {
 				e.printStackTrace();
 			}
 		}
-		
+
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setJSONStoreEnabled(true);
 
 		Twitter twitter = new TwitterFactory(cb.build()).getInstance();
-		twitter.setOAuthConsumer(twitterModel.getConsumerKey(),
-				twitterModel.getConsumerSecret());
-		twitter.setOAuthAccessToken(new AccessToken(twitterModel
-				.getAccessToken(), twitterModel.getAccessToken_secret()));
+		twitter.setOAuthConsumer(twitterModel.getConsumerKey(), twitterModel.getConsumerSecret());
+		twitter.setOAuthAccessToken(new AccessToken(twitterModel.getAccessToken(), twitterModel.getAccessToken_secret()));
 
 		List<Status> statuses = twitter.getUserTimeline(args[0]);
 		System.out.println("Showing home timeline.");
 		for (Status status : statuses) {
-			System.out.println(status.getUser().getName() + ":"
-					+ status.getText());
+			System.out.println(status.getUser().getName() + ":" + status.getText());
 			String rawJSON = DataObjectFactory.getRawJSON(status);
 			System.out.println(rawJSON);
-			
+
 			MediaEntity[] arrMedia = status.getMediaEntities();
 			for (MediaEntity media : arrMedia) {
 				System.out.println("MediaEntity= " + media.getMediaURL());
@@ -64,14 +60,14 @@ public class GetUserTimeLineTweetSample {
 
 			MediaEntity[] arrMediaExt = status.getExtendedMediaEntities();
 			for (MediaEntity media : arrMediaExt) {
-				System.out.println("ExtendedMediaEntities= "+ media.getMediaURL());
+				System.out.println("ExtendedMediaEntities= " + media.getMediaURL());
 			}
-			
+
 			URLEntity[] entity = status.getURLEntities();
 			for (URLEntity urlEntity : entity) {
 				System.out.println("URLEntity= " + urlEntity.getExpandedURL());
 			}
-			
+
 			List<VideoInfo> videoInfoList = VideoInfo.fromRawJson(rawJSON);
 			if (videoInfoList != null) {
 				for (VideoInfo videoInfo : videoInfoList) {
