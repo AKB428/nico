@@ -45,7 +45,8 @@ public class MediaDownloderComponent {
 			//ダウンロード
 			try {
 				String filePath = HttpUtil.download(mediaUrlModel.getUrl(), path);
-				String destPath = "web_rabbitmq_nico/" + Calender.ymd();
+				String destPath = "/web_rabbitmq_nico/" + Calender.ymd();
+				filePath = new File(".").getAbsoluteFile().getParent() + "/" + filePath;
 				RabbitMQ.send(destPath, filePath);
 			} catch (IOException e) {
 				// TODO 自動生成された catch ブロック
