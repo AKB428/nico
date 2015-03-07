@@ -45,23 +45,19 @@ twitter.searchKeywordにStreamingAPIに渡す検索ワードを指定してく�
 
 	java -jar nico.jar private/application.properties
 
-Java7で起動
-
-	java -jar nico_jvm7.jar
 
 
 ##コンパイル方法
 
 コードは全部Javaで書かれています。
 
-Eclipseでプロジェクト指定するかantでコンパイルしてください。(注:build.xmlおよびJVM7用のjarはあまりメンテしていません)
+Eclipseでプロジェクト指定するかantでコンパイルしてください。(注:build.xmlはあまりメンテしていません)
 
 
 ##実行環境
 
-Java7+ (JVM7.0以上が動くOS)
+Java8+
 
-推奨はJava8
 
 ### 外部サーバー
 
