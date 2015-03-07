@@ -1,8 +1,13 @@
 package akb428.tkws;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Properties;
 
 import twitter4j.FilterQuery;
 import twitter4j.MediaEntity;
@@ -13,48 +18,39 @@ import twitter4j.TwitterStreamFactory;
 import twitter4j.auth.AccessToken;
 import akb428.tkws.dao.IMediaUrlDao;
 import akb428.tkws.dao.h2.MediaUrlDao;
-import akb428.tkws.model.TwitterModel;
 import akb428.tkws.thread.MediaDownloderThread;
 
 public class SearchMain {
+	
+	public static Properties applicationProperties = null;
+	private static Boolean isMessageQueue = null;
+	
+	public static void main(String[] args) throws ClassNotFoundException, UnsupportedEncodingException, IOException {
 
-	public static void main(String[] args) throws ClassNotFoundException {
-
-		TwitterModel twitterModel = null;
-
-		// TODO 設定ファイルでMariaDBなどに切り替える
-		//Class.forName("org.sqlite.JDBC");
+		String configFile = "./config/application.properties";
+		
+		if (args.length == 1) {
+				configFile = args[0];
+		}
+		InputStream inStream = new FileInputStream(configFile);
+		applicationProperties = new Properties();
+		applicationProperties.load(new InputStreamReader(inStream, "UTF-8"));
+		
+		// TODO　設定ファイルでDB切り替え
 		Class.forName("org.h2.Driver");
 
-		if (args.length != 2) {
-			try {
-				twitterModel = TwitterConfParser
-						.readConf("conf/twitter_conf.json");
-			} catch (IOException e) {
-				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
-			}
-		} else {
-			try {
-				twitterModel = TwitterConfParser.readConf(args[1]);
-			} catch (IOException e) {
-				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
-			}
-		}
-
 		TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
-		twitterStream.setOAuthConsumer(twitterModel.getConsumerKey(),
-				twitterModel.getConsumerSecret());
-		twitterStream.setOAuthAccessToken(new AccessToken(twitterModel
-				.getAccessToken(), twitterModel.getAccessToken_secret()));
+		twitterStream.setOAuthConsumer(applicationProperties.getProperty("twitter.consumer_key"),
+				applicationProperties.getProperty("twitter.consumer_secret"));
+		twitterStream.setOAuthAccessToken(new AccessToken(applicationProperties.getProperty("twitter.access_token"),
+				applicationProperties.getProperty("twitter.access_token_secret")));
 
 		// TODO 設定ファイルでMariaDBなどに切り替える
 		IMediaUrlDao dao = new MediaUrlDao();
 		
 		twitterStream.addListener(new MyStatusAdapter(dao));
 		ArrayList<String> track = new ArrayList<String>();
-		track.addAll(Arrays.asList(args[0].split(",")));
+		track.addAll(Arrays.asList(applicationProperties.getProperty("twitter.searchKeyword").split(",")));
 
 		String[] trackArray = track.toArray(new String[track.size()]);
 
@@ -63,6 +59,19 @@ public class SearchMain {
 
 		MediaDownloderThread mediaDownloderThread = new MediaDownloderThread();
 		mediaDownloderThread.start();
+	}
+	
+	public static boolean isMessageQueue() {
+		if (isMessageQueue != null ) {
+			return isMessageQueue.booleanValue();
+		}
+		
+		if (SearchMain.applicationProperties.getProperty("messageQueue").equals("true")) {
+			isMessageQueue = true;
+			return isMessageQueue;
+		}
+		isMessageQueue = false;
+		return isMessageQueue;
 	}
 
 }

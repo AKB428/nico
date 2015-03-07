@@ -8,13 +8,15 @@ import java.nio.channels.ReadableByteChannel;
 
 public class HttpUtil {
 
-	public static void download(String url, String path) throws IOException {
+	public static String download(String url, String path) throws IOException {
 		URL website = new URL(url);
         ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+        String filePath = FileUtil.createPath(path, urlLastElement(url));
         FileOutputStream fos =
-            new FileOutputStream(FileUtil.createPath(path, urlLastElement(url)));
+            new FileOutputStream(filePath);
         fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
         fos.close();
+        return filePath;
 	}
 
 	/**

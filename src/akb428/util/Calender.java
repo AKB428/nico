@@ -1,6 +1,8 @@
 package akb428.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class Calender {
 	public static String nowString(){
@@ -13,5 +15,11 @@ public class Calender {
         dateString += String.valueOf( cal.get(Calendar.MINUTE)) + "分";
         dateString += String.valueOf( cal.get(Calendar.SECOND)) + "秒";
         return dateString;
+	}
+	
+	public static String yyyyMMdd(){
+		Date date = new Date();
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        return sdf.format(date);
 	}
 }
