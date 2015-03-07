@@ -1,42 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Create Runnable Jar for Project TwitterKeyWordSearch" basedir=".">
-	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
-	<!--ANT 1.7 is required                                        -->
-
-	<property name="source" value="./src" />
-	<property name="compile" value="./bin" />
-
-	<!-- ディレクトリClassesの作成 -->
-	<target name="directory">
-		<mkdir dir="${compile}" />
-	</target>
-
-	<path id="lib.classpath">
-		<fileset dir="./lib">
-			<include name="**/*.jar" />
-		</fileset>
-	</path>
-	<target name="compile" depends="directory">
-		<javac srcdir="${source}" source="1.8" target="1.8" destdir="${compile}" classpath="./lib/jackson-all-1.9.11.jar;./lib/twitter4j-core-4.0.2.jar;./lib/twitter4j-async-4.0.2.jar;./lib/twitter4j-media-support-4.0.2.jar;./lib/twitter4j-stream-4.0.2.jar;./lib/sqlite-jdbc-3.7.2.jar;./lib/h2-1.4.180.jar" />
-	</target>
-
-	<target name="create_run_jar" depends="compile">
-		<jar destfile="./nico.jar" filesetmanifest="mergewithoutmain">
-			<manifest>
-				<attribute name="Main-Class" value="akb428.tkws.SearchMain" />
-				<attribute name="Class-Path" value="." />
-			</manifest>
-			<fileset dir="./bin/" />
-			<zipfileset excludes="META-INF/*.SF" src="./lib/commons-cli-1.1.jar"/>
-			<zipfileset excludes="META-INF/*.SF" src="./lib/commons-io-1.2.jar"/>
-			<zipfileset excludes="META-INF/*.SF" src="./lib/h2-1.4.180.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="./lib/jackson-all-1.9.11.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="./lib/rabbitmq-client.jar"/>
-			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-core-4.0.2.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-async-4.0.2.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-media-support-4.0.2.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="./lib/twitter4j-stream-4.0.2.jar" />
-			<zipfileset excludes="META-INF/*.SF" src="./lib/sqlite-jdbc-3.7.2.jar" />
-		</jar>
-	</target>
+<project default="create_run_jar" name="Create Runnable Jar for Project Nico with Jar-in-Jar Loader">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="./nico.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="akb428.tkws.SearchMain"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ h2-1.4.180.jar jackson-all-1.9.11.jar sqlite-jdbc-3.7.2.jar twitter4j-async-4.0.2.jar twitter4j-core-4.0.2.jar twitter4j-media-support-4.0.2.jar twitter4j-stream-4.0.2.jar nico.jar commons-cli-1.1.jar commons-io-1.2.jar junit.jar rabbitmq-client-tests.jar rabbitmq-client.jar"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="./bin"/>
+            <zipfileset dir="./lib" includes="h2-1.4.180.jar"/>
+            <zipfileset dir="./lib" includes="jackson-all-1.9.11.jar"/>
+            <zipfileset dir="./lib" includes="sqlite-jdbc-3.7.2.jar"/>
+            <zipfileset dir="./lib" includes="twitter4j-async-4.0.2.jar"/>
+            <zipfileset dir="./lib" includes="twitter4j-core-4.0.2.jar"/>
+            <zipfileset dir="./lib" includes="twitter4j-media-support-4.0.2.jar"/>
+            <zipfileset dir="./lib" includes="twitter4j-stream-4.0.2.jar"/>
+            <fileset dir="."/>
+            <zipfileset dir="." includes="nico.jar"/>
+            <zipfileset dir="./lib" includes="commons-cli-1.1.jar"/>
+            <zipfileset dir="./lib" includes="commons-io-1.2.jar"/>
+            <zipfileset dir="./lib" includes="junit.jar"/>
+            <zipfileset dir="./lib" includes="rabbitmq-client-tests.jar"/>
+            <zipfileset dir="./lib" includes="rabbitmq-client.jar"/>
+        </jar>
+    </target>
 </project>
