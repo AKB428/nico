@@ -7,7 +7,10 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
+
+import org.msgpack.MessagePack;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -61,7 +64,7 @@ public class SearchMain {
 			Channel channel = connection.createChannel();
 			channel.queueDeclare(SendTaskToWorkerStatusAdapter.QUEUE_NAME, false, false, false, null);
 
-			twitterStream.addListener(new SendTaskToWorkerStatusAdapter(channel));
+			twitterStream.addListener(new SendTaskToWorkerStatusAdapter(channel, new MessagePack()));
 		}
 
 		ArrayList<String> track = new ArrayList<String>();
@@ -118,11 +121,12 @@ class StandAloneStatusAdapter extends StatusAdapter {
 
 class SendTaskToWorkerStatusAdapter extends StatusAdapter {
 	public static final String QUEUE_NAME = "development.nico.sendTask";
-
+	public static final String SEARCH_TARGET_ID = SearchMain.applicationProperties.getProperty("twitter.searchTargetId");
 	private Channel channel;
-
-	public SendTaskToWorkerStatusAdapter(Channel channel) {
+	private MessagePack msgpack;
+	public SendTaskToWorkerStatusAdapter(Channel channel, MessagePack msgpack) {
 		this.channel = channel;
+		this.msgpack = msgpack;
 	}
 
 	public void onStatus(Status status) {
@@ -135,10 +139,23 @@ class SendTaskToWorkerStatusAdapter extends StatusAdapter {
 		}
 
 		for (MediaEntity media : arrMediaExt) {
-			String message = String.format("{\"url\":\"%s\", \"text\":\"%s\", \"username\":\"%s\"}", media.getMediaURL(), status.getText(), 
-					status.getUser().getScreenName());
+			List<String> src = new ArrayList<String>();
+			src.add(SEARCH_TARGET_ID);
+			src.add(media.getMediaURL());
+			src.add(media.getText());
+			src.add(status.getUser().getScreenName());
+		
+	
 			try {
-				channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
+				byte[] message = msgpack.write(src);
+	
+			/*
+			String message = String.format("{\"search_target_id\":\"%s\",\"url\":\"%s\", \"text\":\"%s\", \"username\":\"%s\"}",
+					SEARCH_TARGET_ID, media.getMediaURL(), status.getText(), 
+					status.getUser().getScreenName());*/
+
+				//channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
+				channel.basicPublish("", QUEUE_NAME, null, message);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
