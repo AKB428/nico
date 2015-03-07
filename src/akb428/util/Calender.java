@@ -1,6 +1,8 @@
 package akb428.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class Calender {
 	public static String nowString(){
@@ -15,12 +17,9 @@ public class Calender {
         return dateString;
 	}
 	
-	public static String ymd(){
-        String dateString = "";
-        Calendar cal = Calendar.getInstance();
-        dateString += String.valueOf( cal.get(Calendar.YEAR));
-        dateString += String.valueOf( cal.get(Calendar.MONTH) + 1);
-        dateString += String.valueOf( cal.get(Calendar.DATE));
-        return dateString;
+	public static String yyyyMMdd(){
+		Date date = new Date();
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        return sdf.format(date);
 	}
 }

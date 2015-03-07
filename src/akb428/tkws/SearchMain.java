@@ -23,6 +23,7 @@ import akb428.tkws.thread.MediaDownloderThread;
 public class SearchMain {
 	
 	public static Properties applicationProperties = null;
+	private static Boolean isMessageQueue = null;
 	
 	public static void main(String[] args) throws ClassNotFoundException, UnsupportedEncodingException, IOException {
 
@@ -58,6 +59,19 @@ public class SearchMain {
 
 		MediaDownloderThread mediaDownloderThread = new MediaDownloderThread();
 		mediaDownloderThread.start();
+	}
+	
+	public static boolean isMessageQueue() {
+		if (isMessageQueue != null ) {
+			return isMessageQueue.booleanValue();
+		}
+		
+		if (SearchMain.applicationProperties.getProperty("messageQueue").equals("true")) {
+			isMessageQueue = true;
+			return isMessageQueue;
+		}
+		isMessageQueue = false;
+		return isMessageQueue;
 	}
 
 }

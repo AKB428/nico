@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import akb428.tkws.SearchMain;
 import akb428.tkws.dao.h2.MediaUrlDao;
 import akb428.tkws.model.MediaUrlModel;
 import akb428.util.Calender;
@@ -32,7 +33,10 @@ public class MediaDownloderComponent {
 
 		// ファイル名はURL末尾
 		String folderCalenderPath = FileUtil.getFolderPathNameYearAndMonthSubDirectoryDay();
-		String path = FileUtil.createPath("media", folderCalenderPath);
+
+		String saveFolder = SearchMain.applicationProperties.getProperty("twitter.media.downloadPath") + 
+				SearchMain.applicationProperties.getProperty("twitter.searchTargetId");
+		String path = FileUtil.createPath(saveFolder, folderCalenderPath);
 		File file = new File(path);
 		if (!file.exists()) {
 			file.mkdirs();
@@ -45,9 +49,12 @@ public class MediaDownloderComponent {
 			//ダウンロード
 			try {
 				String filePath = HttpUtil.download(mediaUrlModel.getUrl(), path);
-				String destPath = "/web_rabbitmq_nico/" + Calender.ymd();
+				String destPath = "/web_rabbitmq_nico/" + Calender.yyyyMMdd();
 				filePath = new File(".").getAbsoluteFile().getParent() + "/" + filePath;
-				RabbitMQ.send(destPath, filePath);
+				
+				if (SearchMain.isMessageQueue()) {
+					RabbitMQ.send(destPath, filePath);
+				}
 			} catch (IOException e) {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
