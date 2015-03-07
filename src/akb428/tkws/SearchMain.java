@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+
 import twitter4j.FilterQuery;
 import twitter4j.MediaEntity;
 import twitter4j.Status;
@@ -21,51 +25,56 @@ import akb428.tkws.dao.h2.MediaUrlDao;
 import akb428.tkws.thread.MediaDownloderThread;
 
 public class SearchMain {
-	
+
 	public static Properties applicationProperties = null;
 	private static Boolean isMessageQueue = null;
-	
+
 	public static void main(String[] args) throws ClassNotFoundException, UnsupportedEncodingException, IOException {
 
 		String configFile = "./config/application.properties";
-		
+
 		if (args.length == 1) {
-				configFile = args[0];
+			configFile = args[0];
 		}
 		InputStream inStream = new FileInputStream(configFile);
 		applicationProperties = new Properties();
 		applicationProperties.load(new InputStreamReader(inStream, "UTF-8"));
-		
+
 		// TODO　設定ファイルでDB切り替え
 		Class.forName("org.h2.Driver");
 
 		TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
 		twitterStream.setOAuthConsumer(applicationProperties.getProperty("twitter.consumer_key"),
 				applicationProperties.getProperty("twitter.consumer_secret"));
-		twitterStream.setOAuthAccessToken(new AccessToken(applicationProperties.getProperty("twitter.access_token"),
-				applicationProperties.getProperty("twitter.access_token_secret")));
+		twitterStream.setOAuthAccessToken(new AccessToken(applicationProperties.getProperty("twitter.access_token"), applicationProperties
+				.getProperty("twitter.access_token_secret")));
 
-		// TODO 設定ファイルでMariaDBなどに切り替える
-		IMediaUrlDao dao = new MediaUrlDao();
-		
-		twitterStream.addListener(new MyStatusAdapter(dao));
+		if ("stand_alone".equals(applicationProperties.getProperty("application.mode"))) {
+			IMediaUrlDao dao = new MediaUrlDao();
+			twitterStream.addListener(new StandAloneStatusAdapter(dao));
+			MediaDownloderThread mediaDownloderThread = new MediaDownloderThread();
+			mediaDownloderThread.start();
+		} else if ("send_task_to_worker".equals(applicationProperties.getProperty("application.mode"))) {
+			ConnectionFactory factory = new ConnectionFactory();
+			factory.setHost("localhost");
+			Connection connection = factory.newConnection();
+			Channel channel = connection.createChannel();
+			channel.queueDeclare(SendTaskToWorkerStatusAdapter.QUEUE_NAME, false, false, false, null);
+
+			twitterStream.addListener(new SendTaskToWorkerStatusAdapter(channel));
+		}
+
 		ArrayList<String> track = new ArrayList<String>();
 		track.addAll(Arrays.asList(applicationProperties.getProperty("twitter.searchKeyword").split(",")));
-
 		String[] trackArray = track.toArray(new String[track.size()]);
-
 		twitterStream.filter(new FilterQuery(0, null, trackArray));
-
-
-		MediaDownloderThread mediaDownloderThread = new MediaDownloderThread();
-		mediaDownloderThread.start();
 	}
-	
+
 	public static boolean isMessageQueue() {
-		if (isMessageQueue != null ) {
+		if (isMessageQueue != null) {
 			return isMessageQueue.booleanValue();
 		}
-		
+
 		if (SearchMain.applicationProperties.getProperty("messageQueue").equals("true")) {
 			isMessageQueue = true;
 			return isMessageQueue;
@@ -76,32 +85,63 @@ public class SearchMain {
 
 }
 
-class MyStatusAdapter extends StatusAdapter {
-	
+class StandAloneStatusAdapter extends StatusAdapter {
+
 	IMediaUrlDao dao = null;
-	
-	public MyStatusAdapter (IMediaUrlDao dao) {
+
+	public StandAloneStatusAdapter(IMediaUrlDao dao) {
 		this.dao = dao;
 	}
-	
+
 	public void onStatus(Status status) {
 		System.out.println("@" + status.getUser().getScreenName());
 		System.out.println(status.getText());
 		// MediaEntity[] arrMedia = status.getMediaEntities(); これだと写真１枚しか取得できない
 		MediaEntity[] arrMediaExt = status.getExtendedMediaEntities();
-		
-		if (arrMediaExt.length > 0 ) {
+
+		if (arrMediaExt.length > 0) {
 			System.out.println("メディアURLが見つかりました");
 		}
-		
+
 		for (MediaEntity media : arrMediaExt) {
 			// http://kikutaro777.hatenablog.com/entry/2014/01/26/110350
 			System.out.println(media.getMediaURL());
 
-			if(!dao.isExistUrl(media.getMediaURL())) {
+			if (!dao.isExistUrl(media.getMediaURL())) {
 				// TODO keywordを保存したいがここでは取得できないため一時的にtextをそのまま保存
 				// idはインクリメントで自動払い出し
 				dao.registUrl(media.getMediaURL(), status.getText(), status.getUser().getScreenName());
+			}
+		}
+	}
+}
+
+class SendTaskToWorkerStatusAdapter extends StatusAdapter {
+	public static final String QUEUE_NAME = "development.nico.sendTask";
+
+	private Channel channel;
+
+	public SendTaskToWorkerStatusAdapter(Channel channel) {
+		this.channel = channel;
+	}
+
+	public void onStatus(Status status) {
+		System.out.println("@" + status.getUser().getScreenName());
+		System.out.println(status.getText());
+		MediaEntity[] arrMediaExt = status.getExtendedMediaEntities();
+
+		if (arrMediaExt.length > 0) {
+			System.out.println("メディアURLが見つかりました");
+		}
+
+		for (MediaEntity media : arrMediaExt) {
+			String message = String.format("{\"url\":\"%s\", \"text\":\"%s\", \"username\":\"%s\"}", media.getMediaURL(), status.getText(), 
+					status.getUser().getScreenName());
+			try {
+				channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
