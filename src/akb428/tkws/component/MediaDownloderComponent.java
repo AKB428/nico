@@ -49,10 +49,11 @@ public class MediaDownloderComponent {
 			//ダウンロード
 			try {
 				String filePath = HttpUtil.download(mediaUrlModel.getUrl(), path);
-				String destPath = "/web_rabbitmq_nico/" + Calender.yyyyMMdd();
-				filePath = new File(".").getAbsoluteFile().getParent() + "/" + filePath;
-				
+
 				if (SearchMain.isMessageQueue()) {
+					String destPath = "/web_rabbitmq_nico/" + Calender.yyyyMMdd();
+					filePath = new File(".").getAbsoluteFile().getParent() + "/" + filePath;
+					
 					RabbitMQ.send(destPath, filePath);
 				}
 			} catch (IOException e) {
