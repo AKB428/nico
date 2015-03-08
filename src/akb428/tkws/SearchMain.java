@@ -43,8 +43,6 @@ public class SearchMain {
 		applicationProperties = new Properties();
 		applicationProperties.load(new InputStreamReader(inStream, "UTF-8"));
 
-		// TODO　設定ファイルでDB切り替え
-		Class.forName("org.h2.Driver");
 
 		TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
 		twitterStream.setOAuthConsumer(applicationProperties.getProperty("twitter.consumer_key"),
@@ -53,11 +51,16 @@ public class SearchMain {
 				.getProperty("twitter.access_token_secret")));
 
 		if ("stand_alone".equals(applicationProperties.getProperty("application.mode"))) {
+			// スタンドアローンは必然的にH2にする
+			Class.forName("org.h2.Driver");
+
 			IMediaUrlDao dao = new MediaUrlDao();
 			twitterStream.addListener(new StandAloneStatusAdapter(dao));
 			MediaDownloderThread mediaDownloderThread = new MediaDownloderThread();
 			mediaDownloderThread.start();
 		} else if ("send_task_to_worker".equals(applicationProperties.getProperty("application.mode"))) {
+			
+			// send_taskの時はDBに接続しない
 			ConnectionFactory factory = new ConnectionFactory();
 			factory.setHost("localhost");
 			Connection connection = factory.newConnection();

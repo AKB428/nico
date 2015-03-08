@@ -63,7 +63,13 @@ Java8+
 
 設定ファイルで外部サーバーの使用を許可した場合はそのソフトウェアが必要になります
 
+対応しているサーバーは以下になります。
+
+#### MessageQueue Server
 * RabbitMQ
 
+#### Rerational Database Server
+* H2
+* MariaDB
 
 
