@@ -20,8 +20,8 @@ import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 import twitter4j.auth.AccessToken;
 import akb428.tkws.config.Application;
+import akb428.tkws.dao.FactoryMediaUrlDao;
 import akb428.tkws.dao.IMediaUrlDao;
-import akb428.tkws.dao.h2.MediaUrlDao;
 import akb428.tkws.thread.MediaDownloderThread;
 
 public class SearchMain {
@@ -44,7 +44,7 @@ public class SearchMain {
 
 		if ("stand_alone".equals(Application.properties.getProperty("application.mode"))) {
 
-			IMediaUrlDao dao = new MediaUrlDao();
+			IMediaUrlDao dao = FactoryMediaUrlDao.create();
 			twitterStream.addListener(new StandAloneStatusAdapter(dao));
 			MediaDownloderThread mediaDownloderThread = new MediaDownloderThread();
 			mediaDownloderThread.start();

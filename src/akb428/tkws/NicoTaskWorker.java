@@ -13,8 +13,8 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
 
 import akb428.tkws.config.Application;
+import akb428.tkws.dao.FactoryMediaUrlDao;
 import akb428.tkws.dao.IMediaUrlDao;
-import akb428.tkws.dao.mariadb.MediaUrlDao;
 import akb428.tkws.thread.MediaDownloderThread;
 
 public class NicoTaskWorker {
@@ -30,7 +30,7 @@ public class NicoTaskWorker {
 		MediaDownloderThread mediaDownloderThread = new MediaDownloderThread();
 		mediaDownloderThread.start();
 
-		IMediaUrlDao dao = new MediaUrlDao();
+		IMediaUrlDao dao = FactoryMediaUrlDao.create();
 
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");
@@ -61,11 +61,11 @@ public class NicoTaskWorker {
 	}
 
 	private static void doWork(IMediaUrlDao dao, TaskModel taskModel) throws InterruptedException {
-
-		// DAO Start
 		if (!dao.isExistUrl(taskModel.url)) {
 			System.out.println("DB regist");
 			dao.registUrl(taskModel.url, taskModel.text, taskModel.userName);
+		} else {
+			System.out.println("duplicate media url");
 		}
 	}
 }
