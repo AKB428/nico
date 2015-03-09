@@ -55,11 +55,11 @@ public class MediaUrlDao extends AbstractMediaUrlDao {
 			statement
 					.executeUpdate("create table "
 							+ TABLE_NAME
-							+ " (ID INT PRIMARY KEY AUTO_INCREMENT, url VARCHAR(2048), search_word  VARCHAR(1024), twitter_user_name VARCHAR(128), created_at VARCHAR(128),  updated_at VARCHAR(128), note VARCHAR(255));");
+							+ " (ID INT PRIMARY KEY AUTO_INCREMENT, path VARCHAR(1024), url VARCHAR(2048), search_word  VARCHAR(1024), twitter_user_name VARCHAR(128), created_at VARCHAR(128),  updated_at VARCHAR(128), note VARCHAR(255));");
 			statement
 					.executeUpdate("create table "
 							+ TABLE_HISTORY_NAME
-							+ " (ID INT PRIMARY KEY AUTO_INCREMENT, original_id INT, url VARCHAR(2048), search_word VARCHAR(1024), twitter_user_name VARCHAR(128), created_at VARCHAR(128) ,updated_at VARCHAR(128), note VARCHAR(255));");
+							+ " (ID INT PRIMARY KEY AUTO_INCREMENT, original_id INT, path VARCHAR(1024), url VARCHAR(2048), search_word VARCHAR(1024), twitter_user_name VARCHAR(128), created_at VARCHAR(128) ,updated_at VARCHAR(128), note VARCHAR(255));");
 
 			statement.executeUpdate("create index url_index on " + TABLE_NAME + "(url);");
 			statement.executeUpdate("create index url_index_history on " + TABLE_HISTORY_NAME + "(url);");

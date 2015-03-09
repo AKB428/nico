@@ -4,7 +4,7 @@ import akb428.tkws.component.MediaDownloderComponent;
 
 public class MediaDownloderThread extends Thread {
 
-	public static final int SLEEP_TIME = 1000*30;
+	public static final int SLEEP_TIME = 1000*5;
 
 	@Override
 	public void run() {

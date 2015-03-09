@@ -42,6 +42,7 @@ public class NicoTaskWorker {
 
 		channel.basicConsume(SendTaskToWorkerStatusAdapter.QUEUE_NAME, true, consumer);
 
+		String path = null;
 		String url = null;
 		String text = null;
 		String userName = null;
@@ -50,11 +51,12 @@ public class NicoTaskWorker {
 			QueueingConsumer.Delivery delivery = consumer.nextDelivery();
 			List<String> byteData = msgpack.read(delivery.getBody(), Templates.tList(Templates.TString));
 
+			path = byteData.get(0);
 			url = byteData.get(1);
 			text = byteData.get(2);
 			userName = byteData.get(3);
 			System.out.println(url);
-			TaskModel taskModel = new TaskModel(url, text, userName);
+			TaskModel taskModel = new TaskModel(path, url, text, userName);
 			doWork(dao, taskModel);
 		}
 
@@ -63,7 +65,7 @@ public class NicoTaskWorker {
 	private static void doWork(IMediaUrlDao dao, TaskModel taskModel) throws InterruptedException {
 		if (!dao.isExistUrl(taskModel.url)) {
 			System.out.println("DB regist");
-			dao.registUrl(taskModel.url, taskModel.text, taskModel.userName);
+			dao.registUrl(taskModel.path, taskModel.url, taskModel.text, taskModel.userName);
 		} else {
 			System.out.println("duplicate media url");
 		}
@@ -72,11 +74,13 @@ public class NicoTaskWorker {
 
 class TaskModel {
 
+	String path = null;
 	String url = null;
 	String text = null;
 	String userName = null;
 
-	public TaskModel(String url, String text, String userName) {
+	public TaskModel(String path, String url, String text, String userName) {
+		this.path = path;
 		this.url = url;
 		this.text = text;
 		this.userName = userName;

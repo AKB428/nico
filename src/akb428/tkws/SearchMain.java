@@ -26,8 +26,6 @@ import akb428.tkws.thread.MediaDownloderThread;
 
 public class SearchMain {
 
-	private static Boolean isMessageQueue = null;
-
 	public static void main(String[] args) throws ClassNotFoundException, UnsupportedEncodingException, IOException {
 
 		if (args.length == 1) {
@@ -66,19 +64,6 @@ public class SearchMain {
 		twitterStream.filter(new FilterQuery(0, null, trackArray));
 	}
 
-	public static boolean isMessageQueue() {
-		if (isMessageQueue != null) {
-			return isMessageQueue.booleanValue();
-		}
-
-		if (Application.properties.getProperty("messageQueue").equals("true")) {
-			isMessageQueue = true;
-			return isMessageQueue;
-		}
-		isMessageQueue = false;
-		return isMessageQueue;
-	}
-
 }
 
 class StandAloneStatusAdapter extends StatusAdapter {
@@ -106,7 +91,7 @@ class StandAloneStatusAdapter extends StatusAdapter {
 			if (!dao.isExistUrl(media.getMediaURL())) {
 				// TODO keywordを保存したいがここでは取得できないため一時的にtextをそのまま保存
 				// idはインクリメントで自動払い出し
-				dao.registUrl(media.getMediaURL(), status.getText(), status.getUser().getScreenName());
+				dao.registUrl(Application.saveFolder(), media.getMediaURL(), status.getText(), status.getUser().getScreenName());
 			}
 		}
 	}
@@ -134,7 +119,7 @@ class SendTaskToWorkerStatusAdapter extends StatusAdapter {
 
 		for (MediaEntity media : arrMediaExt) {
 			List<String> src = new ArrayList<String>();
-			src.add(SEARCH_TARGET_ID);
+			src.add(Application.saveFolder());
 			src.add(media.getMediaURL());
 			src.add(media.getText());
 			src.add(status.getUser().getScreenName());
