@@ -1,12 +1,8 @@
 package akb428.tkws;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.Properties;
 
 import org.msgpack.MessagePack;
 import org.msgpack.template.Templates;
@@ -16,27 +12,20 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
 
+import akb428.tkws.config.Application;
 import akb428.tkws.dao.IMediaUrlDao;
 import akb428.tkws.dao.mariadb.MediaUrlDao;
 import akb428.tkws.thread.MediaDownloderThread;
 
 public class NicoTaskWorker {
 
-	public static Properties applicationProperties = null;
-
 	public static void main(String[] args) throws ClassNotFoundException, UnsupportedEncodingException, IOException, InterruptedException {
 
-		String configFile = "./config/application.properties";
-
 		if (args.length == 1) {
-			configFile = args[0];
+			new Application(args[0]);
+		} else {
+			new Application();
 		}
-		InputStream inStream = new FileInputStream(configFile);
-		applicationProperties = new Properties();
-		applicationProperties.load(new InputStreamReader(inStream, "UTF-8"));
-
-		// TODO　設定ファイルでDB切り替え
-		Class.forName("org.mariadb.jdbc.Driver");
 
 		MediaDownloderThread mediaDownloderThread = new MediaDownloderThread();
 		mediaDownloderThread.start();
@@ -75,8 +64,6 @@ public class NicoTaskWorker {
 
 		// DAO Start
 		if (!dao.isExistUrl(taskModel.url)) {
-			// TODO keywordを保存したいがここでは取得できないため一時的にtextをそのまま保存
-			// idはインクリメントで自動払い出し
 			System.out.println("DB regist");
 			dao.registUrl(taskModel.url, taskModel.text, taskModel.userName);
 		}

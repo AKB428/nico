@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import akb428.tkws.SearchMain;
+import akb428.tkws.config.Application;
 import akb428.tkws.dao.h2.MediaUrlDao;
 import akb428.tkws.model.MediaUrlModel;
 import akb428.util.Calender;
@@ -34,8 +35,8 @@ public class MediaDownloderComponent {
 		// ファイル名はURL末尾
 		String folderCalenderPath = FileUtil.getFolderPathNameYearAndMonthSubDirectoryDay();
 
-		String saveFolder = SearchMain.applicationProperties.getProperty("twitter.media.downloadPath") + 
-				SearchMain.applicationProperties.getProperty("twitter.searchTargetId");
+		String saveFolder = Application.properties.getProperty("twitter.media.downloadPath") + 
+				Application.properties.getProperty("twitter.searchTargetId");
 		String path = FileUtil.createPath(saveFolder, folderCalenderPath);
 		File file = new File(path);
 		if (!file.exists()) {
