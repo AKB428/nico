@@ -37,6 +37,8 @@ twitter.searchKeywordにStreamingAPIに渡す検索ワードを指定してく�
 
 ##起動方法
 
+### mode=stand_alone
+
 デフォルト
 
 	java -jar nico.jar
@@ -45,7 +47,14 @@ twitter.searchKeywordにStreamingAPIに渡す検索ワードを指定してく�
 
 	java -jar nico.jar private/application.properties
 
+## mode=send_task_to_worker
 
+メッセージ・キューに画像URLを投げるnico.jarと
+画像URLを処理するworker.jarを起動する（worker.jarは複数立ち上げてもよい）
+
+	java -jar nico.jar private/application.properties
+	java -jar worker.jar private/application.properties
+	
 
 ##コンパイル方法
 

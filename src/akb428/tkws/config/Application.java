@@ -17,6 +17,7 @@ public class Application {
 	public static boolean isMessageQueue = false;
 	public static String _saveFolder = null;
 	public static int mediaDownloadThreadSleepSec = 5;
+	public static String searchTargetId = null;
 
 	public static String configFilename = "./config/application.properties";
 
@@ -36,7 +37,8 @@ public class Application {
 		initIsMessageQueue();
 		
 		mediaDownloadThreadSleepSec = Integer.valueOf(Application.properties.getProperty("mediaDownloader.sleepSec")).intValue();
-		
+		searchTargetId = Application.properties.getProperty("twitter.searchTargetId");
+
 		IMediaUrlDao iMediaUrlDao = FactoryMediaUrlDao.create();
 		iMediaUrlDao.tableCheckAndCreate();
 	}

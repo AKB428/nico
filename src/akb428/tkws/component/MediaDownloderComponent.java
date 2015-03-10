@@ -26,7 +26,7 @@ public class MediaDownloderComponent {
 		if (mediaUrlModelList.size() > 0 ) {
 			return true;
 		}
-
+		mediaUrlDao.closeHandler();
 		return false;
 	}
 
@@ -49,7 +49,7 @@ public class MediaDownloderComponent {
 				String filePath = HttpUtil.download(mediaUrlModel.getUrl(), path);
 
 				if (Application.isMessageQueue) {
-					String destPath = "/web_rabbitmq_nico/" + Calender.yyyyMMdd();
+					String destPath = "/web_rabbitmq_nico/" +  Application.searchTargetId + "/" + Calender.yyyyMMdd();
 					filePath = new File(".").getAbsoluteFile().getParent() + "/" + filePath;
 					
 					RabbitMQ.send(destPath, filePath);
@@ -61,6 +61,8 @@ public class MediaDownloderComponent {
 			//deleteFlag設定
 			mediaUrlDao.deleteAndCopyHistory(mediaUrlModel);
 		}
+		
+		mediaUrlDao.closeHandler();
 	}
 
 }
