@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.util.List;
 
 import akb428.tkws.config.Application;
-import akb428.tkws.dao.h2.MediaUrlDao;
+import akb428.tkws.dao.FactoryMediaUrlDao;
+import akb428.tkws.dao.IMediaUrlDao;
 import akb428.tkws.model.MediaUrlModel;
 import akb428.util.Calender;
 import akb428.util.FileUtil;
@@ -18,7 +19,7 @@ public class MediaDownloderComponent {
 	List<MediaUrlModel> mediaUrlModelList = null;
 
 	public boolean isDownloadList() {
-		MediaUrlDao mediaUrlDao = new MediaUrlDao();
+		IMediaUrlDao mediaUrlDao = FactoryMediaUrlDao.create();
 
 		mediaUrlModelList = mediaUrlDao.getUrlList();
 
@@ -34,7 +35,7 @@ public class MediaDownloderComponent {
 		// ファイル名はURL末尾
 		String folderCalenderPath = FileUtil.getFolderPathNameYearAndMonthSubDirectoryDay();
 
-		MediaUrlDao mediaUrlDao = new MediaUrlDao();
+		IMediaUrlDao mediaUrlDao = FactoryMediaUrlDao.create();
 
 		//ファイル保存
 		for (MediaUrlModel mediaUrlModel: mediaUrlModelList){

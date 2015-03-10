@@ -16,8 +16,6 @@ public class MediaUrlDao extends AbstractMediaUrlDao{
 		try {
 			con = DriverManager.
 				    getConnection("jdbc:h2:./database/twitterKeyWordSearch.h2");
-
-			tableCheckAndCreate();
 		} catch (SQLException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();

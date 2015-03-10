@@ -2,6 +2,7 @@ package akb428.tkws;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.msgpack.MessagePack;
@@ -19,7 +20,7 @@ import akb428.tkws.thread.MediaDownloderThread;
 
 public class NicoTaskWorker {
 
-	public static void main(String[] args) throws ClassNotFoundException, UnsupportedEncodingException, IOException, InterruptedException {
+	public static void main(String[] args) throws ClassNotFoundException, UnsupportedEncodingException, IOException, InterruptedException, SQLException {
 
 		if (args.length == 1) {
 			new Application(args[0]);
@@ -27,10 +28,10 @@ public class NicoTaskWorker {
 			new Application();
 		}
 
+		IMediaUrlDao dao = FactoryMediaUrlDao.create();
+
 		MediaDownloderThread mediaDownloderThread = new MediaDownloderThread();
 		mediaDownloderThread.start();
-
-		IMediaUrlDao dao = FactoryMediaUrlDao.create();
 
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");

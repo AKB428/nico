@@ -2,6 +2,7 @@ package akb428.tkws;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +27,7 @@ import akb428.tkws.thread.MediaDownloderThread;
 
 public class SearchMain {
 
-	public static void main(String[] args) throws ClassNotFoundException, UnsupportedEncodingException, IOException {
+	public static void main(String[] args) throws ClassNotFoundException, UnsupportedEncodingException, IOException, SQLException {
 
 		if (args.length == 1) {
 			new Application(args[0]);

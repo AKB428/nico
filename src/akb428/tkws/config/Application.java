@@ -5,7 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 import java.util.Properties;
+
+import akb428.tkws.dao.FactoryMediaUrlDao;
+import akb428.tkws.dao.IMediaUrlDao;
 
 public class Application {
 
@@ -16,11 +20,11 @@ public class Application {
 
 	public static String configFilename = "./config/application.properties";
 
-	public Application() throws UnsupportedEncodingException, IOException, ClassNotFoundException {
+	public Application() throws UnsupportedEncodingException, IOException, ClassNotFoundException, SQLException {
 		new Application(configFilename);
 	}
 
-	public Application(String configFilename) throws UnsupportedEncodingException, IOException, ClassNotFoundException {
+	public Application(String configFilename) throws UnsupportedEncodingException, IOException, ClassNotFoundException, SQLException {
 
 		Application.configFilename = configFilename;
 		InputStream inStream = new FileInputStream(Application.configFilename);
@@ -32,12 +36,15 @@ public class Application {
 		initIsMessageQueue();
 		
 		mediaDownloadThreadSleepSec = Integer.valueOf(Application.properties.getProperty("mediaDownloader.sleepSec")).intValue();
+		
+		IMediaUrlDao iMediaUrlDao = FactoryMediaUrlDao.create();
+		iMediaUrlDao.tableCheckAndCreate();
 	}
 
 	private void loadDriver() throws ClassNotFoundException {
-		if ("H2".equals(Application.properties.getProperty("application.mode"))) {
+		if ("H2".equals(Application.properties.getProperty("RDB.software"))) {
 			Class.forName("org.h2.Driver");
-		} else if ("MariaDB".equals(Application.properties.getProperty("application.mode"))) {
+		} else if ("MariaDB".equals(Application.properties.getProperty("RDB.software"))) {
 			Class.forName("org.mariadb.jdbc.Driver");
 		}
 	}
