@@ -77,8 +77,7 @@ Java8+
 #### MessageQueue Server
 * RabbitMQ
 
-#### Rerational Database Server
-* H2
+#### Relational Database Server
 * MariaDB
 
 
