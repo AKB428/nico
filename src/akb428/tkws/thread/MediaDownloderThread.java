@@ -1,10 +1,9 @@
 package akb428.tkws.thread;
 
 import akb428.tkws.component.MediaDownloderComponent;
+import akb428.tkws.config.Application;
 
 public class MediaDownloderThread extends Thread {
-
-	public static final int SLEEP_TIME = 1000*5;
 
 	@Override
 	public void run() {
@@ -19,7 +18,7 @@ public class MediaDownloderThread extends Thread {
 			}
 
 			try {
-				sleep(SLEEP_TIME);
+				sleep(Application.mediaDownloadThreadSleepSec * 1000);
 			} catch (InterruptedException e) {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();

@@ -12,6 +12,7 @@ public class Application {
 	public static Properties properties = null;
 	public static boolean isMessageQueue = false;
 	public static String _saveFolder = null;
+	public static int mediaDownloadThreadSleepSec = 5;
 
 	public static String configFilename = "./config/application.properties";
 
@@ -29,6 +30,8 @@ public class Application {
 		loadDriver();
 
 		initIsMessageQueue();
+		
+		mediaDownloadThreadSleepSec = Integer.valueOf(Application.properties.getProperty("mediaDownloader.sleepSec")).intValue();
 	}
 
 	private void loadDriver() throws ClassNotFoundException {
