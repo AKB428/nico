@@ -122,7 +122,7 @@ class SendTaskToWorkerStatusAdapter extends StatusAdapter {
 			List<String> src = new ArrayList<String>();
 			src.add(Application.saveFolder());
 			src.add(media.getMediaURL());
-			src.add(media.getText());
+			src.add(status.getText());
 			src.add(status.getUser().getScreenName());
 
 			try {
