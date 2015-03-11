@@ -52,18 +52,19 @@ public abstract class AbstractMediaUrlDao implements IMediaUrlDao{
 	}
 
 	@Override
-	public void registUrl(String url, String keyword, String twitterUserName) {
+	public void registUrl(String path, String url, String keyword, String twitterUserName) {
 		try {
 			String query = "INSERT INTO " + TABLE_NAME;
-			query += " (url,search_word,twitter_user_name, created_at,updated_at) VALUES (?,?,?,?,?) ";
+			query += " (path, url,search_word,twitter_user_name, created_at,updated_at) VALUES (?,?,?,?,?,?) ";
 
 			PreparedStatement stmt = con.prepareStatement(query);
 
-			stmt.setString(1, url);
-			stmt.setString(2, keyword);
-			stmt.setString(3, twitterUserName);
-			stmt.setString(4, Calender.nowString());
+			stmt.setString(1, path);
+			stmt.setString(2, url);
+			stmt.setString(3, keyword);
+			stmt.setString(4, twitterUserName);
 			stmt.setString(5, Calender.nowString());
+			stmt.setString(6, Calender.nowString());
 			stmt.executeUpdate();
 
 			stmt.close();
@@ -81,15 +82,16 @@ public abstract class AbstractMediaUrlDao implements IMediaUrlDao{
 		try {
 
 			String query = "INSERT INTO " + TABLE_HISTORY_NAME;
-			query += " (original_id, url,search_word,twitter_user_name, created_at,updated_at) VALUES (?,?,?,?,?,?) ";
+			query += " (original_id, path, url,search_word,twitter_user_name, created_at,updated_at) VALUES (?,?,?,?,?,?,?) ";
 
 			PreparedStatement stmt = con.prepareStatement(query);
 			stmt.setInt(1, mediaUrlModel.getId());
-			stmt.setString(2, mediaUrlModel.getUrl());
-			stmt.setString(3, mediaUrlModel.getSearch_word());
-			stmt.setString(4, mediaUrlModel.getTwitter_user_name());
-			stmt.setString(5, Calender.nowString());
+			stmt.setString(2, mediaUrlModel.getPath());
+			stmt.setString(3, mediaUrlModel.getUrl());
+			stmt.setString(4, mediaUrlModel.getSearch_word());
+			stmt.setString(5, mediaUrlModel.getTwitter_user_name());
 			stmt.setString(6, Calender.nowString());
+			stmt.setString(7, Calender.nowString());
 			stmt.executeUpdate();
 
 			stmt.close();
@@ -121,6 +123,7 @@ public abstract class AbstractMediaUrlDao implements IMediaUrlDao{
 			while (rs.next()) {
 				MediaUrlModel mediaUrlModel = new MediaUrlModel();
 				mediaUrlModel.setId(rs.getInt("id"));
+				mediaUrlModel.setPath(rs.getString("path"));
 				mediaUrlModel.setUrl(rs.getString("url"));
 				mediaUrlModel.setSearch_word(rs.getString("search_word"));
 				mediaUrlModel.setTwitter_user_name(rs

@@ -3,6 +3,7 @@ package akb428.tkws.model;
 public class MediaUrlModel {
 
 	int id;
+	String path;
 	String url;
 	String search_word;
 	String twitter_user_name;
@@ -47,6 +48,14 @@ public class MediaUrlModel {
 
 	public void setNote(String note) {
 		this.note = note;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 }

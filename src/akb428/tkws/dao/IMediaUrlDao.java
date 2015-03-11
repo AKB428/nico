@@ -17,7 +17,7 @@ public interface IMediaUrlDao {
 
 	public boolean isExistUrl(String url);
 
-	public void registUrl(String url, String keyword, String twitterUserName);
+	public void registUrl(String path, String url, String keyword, String twitterUserName);
 
 	public void deleteAndCopyHistory(MediaUrlModel mediaUrlModel);
 

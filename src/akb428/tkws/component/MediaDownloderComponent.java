@@ -4,8 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import akb428.tkws.SearchMain;
-import akb428.tkws.dao.h2.MediaUrlDao;
+import akb428.tkws.config.Application;
+import akb428.tkws.dao.FactoryMediaUrlDao;
+import akb428.tkws.dao.IMediaUrlDao;
 import akb428.tkws.model.MediaUrlModel;
 import akb428.util.Calender;
 import akb428.util.FileUtil;
@@ -18,14 +19,14 @@ public class MediaDownloderComponent {
 	List<MediaUrlModel> mediaUrlModelList = null;
 
 	public boolean isDownloadList() {
-		MediaUrlDao mediaUrlDao = new MediaUrlDao();
+		IMediaUrlDao mediaUrlDao = FactoryMediaUrlDao.create();
 
 		mediaUrlModelList = mediaUrlDao.getUrlList();
 
 		if (mediaUrlModelList.size() > 0 ) {
 			return true;
 		}
-
+		mediaUrlDao.closeHandler();
 		return false;
 	}
 
@@ -34,24 +35,21 @@ public class MediaDownloderComponent {
 		// ファイル名はURL末尾
 		String folderCalenderPath = FileUtil.getFolderPathNameYearAndMonthSubDirectoryDay();
 
-		String saveFolder = SearchMain.applicationProperties.getProperty("twitter.media.downloadPath") + 
-				SearchMain.applicationProperties.getProperty("twitter.searchTargetId");
-		String path = FileUtil.createPath(saveFolder, folderCalenderPath);
-		File file = new File(path);
-		if (!file.exists()) {
-			file.mkdirs();
-		}
-
-		MediaUrlDao mediaUrlDao = new MediaUrlDao();
+		IMediaUrlDao mediaUrlDao = FactoryMediaUrlDao.create();
 
 		//ファイル保存
 		for (MediaUrlModel mediaUrlModel: mediaUrlModelList){
 			//ダウンロード
 			try {
+				String path = FileUtil.createPath(mediaUrlModel.getPath(), folderCalenderPath);
+				File file = new File(path);
+				if (!file.exists()) {
+					file.mkdirs();
+				}
 				String filePath = HttpUtil.download(mediaUrlModel.getUrl(), path);
 
-				if (SearchMain.isMessageQueue()) {
-					String destPath = "/web_rabbitmq_nico/" + Calender.yyyyMMdd();
+				if (Application.isMessageQueue) {
+					String destPath = "/web_rabbitmq_nico/" +  Application.searchTargetId + "/" + Calender.yyyyMMdd();
 					filePath = new File(".").getAbsoluteFile().getParent() + "/" + filePath;
 					
 					RabbitMQ.send(destPath, filePath);
@@ -63,6 +61,8 @@ public class MediaDownloderComponent {
 			//deleteFlag設定
 			mediaUrlDao.deleteAndCopyHistory(mediaUrlModel);
 		}
+		
+		mediaUrlDao.closeHandler();
 	}
 
 }
