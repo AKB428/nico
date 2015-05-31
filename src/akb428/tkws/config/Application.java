@@ -36,7 +36,9 @@ public class Application {
 
 		initIsMessageQueue();
 		
-		mediaDownloadThreadSleepSec = Integer.valueOf(Application.properties.getProperty("mediaDownloader.sleepSec")).intValue();
+		if (Application.properties.getProperty("mediaDownloader.sleepSec") != null) {
+			mediaDownloadThreadSleepSec = Integer.valueOf(Application.properties.getProperty("mediaDownloader.sleepSec")).intValue();
+		}
 		searchTargetId = Application.properties.getProperty("twitter.searchTargetId");
 
 		IMediaUrlDao iMediaUrlDao = FactoryMediaUrlDao.create();
