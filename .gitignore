@@ -17,4 +17,6 @@ bin/*
 private/*
 /bin/
 media/*
-database/twitterKeyWordSearch.*
+database/*.*
+database/*bk*
+database/*backup*

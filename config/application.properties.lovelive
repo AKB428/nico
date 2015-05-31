@@ -1,0 +1,29 @@
+twitter.consumer_key=
+twitter.consumer_secret=
+twitter.access_token=
+twitter.access_token_secret=
+
+twitter.media.downloadPath=media/
+twitter.searchKeyword=ラブライブ,lovelive,LoveLive,スクフェス,ほのか,穂乃果,ことり,真姫,にこ,絵里,のぞみ,のんたん,海未,りん,花陽,にこまき,のぞえり,BiBi,リリホワ,プランタン,穂乃果 ほのか,絢瀬 絵里,南 ことり,園田 海未,星空 凛,西木野 真姫,東條 希,小泉 花陽,矢澤 にこ,室田雄平,ラブライバー,LoveLiver,高坂穗乃果,絢瀨繪里,南小鳥,園田海未,星空凛,西木野真姬,東條希,小泉花陽,矢泽妮可,矢泽日香,矢泽妮歌,矢泽仁子
+twitter.searchTargetId=lovelive
+
+RDB=true
+#H2 or MariaDB
+RDB.software=H2
+#データベースは予め作成しておく必要あり。H2の時は不要
+RDB.hostname=
+RDB.username=
+RDB.passowrd=
+RDB.database=
+
+messageQueue=false
+messageQueue.server=
+messageQueue.send.downloadPath=
+
+#application.mode=
+#Mode1 stand_alone
+#Mode2 send_task_to_worker
+application.mode=stand_alone
+
+
+
